@@ -153,6 +153,9 @@ function downloadImage() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+    
+    // Record conversion in dashboard
+    recordConversion(currentConversionType);
 }
 
 // Reset Converter
@@ -164,6 +167,19 @@ function resetConverter() {
     
     // Scroll to upload area
     document.getElementById('uploadArea').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Record conversion in dashboard
+function recordConversion(type) {
+    let stats = JSON.parse(localStorage.getItem('imageProStats')) || {};
+    
+    if (!stats.conversionsByType) {
+        stats.conversionsByType = {};
+    }
+    
+    stats.conversionsByType[type] = (stats.conversionsByType[type] || 0) + 1;
+    
+    localStorage.setItem('imageProStats', JSON.stringify(stats));
 }
 
 // Initialize on page load
