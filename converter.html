@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محول الصور - Image Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="converter-page">
+
+<!-- Header -->
+<header class="converter-header">
+    <a href="index.html" class="back-btn">← العودة</a>
+    <h1>محول الصور الاحترافي</h1>
+</header>
+
+<!-- Main Converter Section -->
+<main class="converter-main">
+    <div class="converter-container">
+        
+        <!-- Conversion Type Selection -->
+        <div class="conversion-types">
+            <h2>اختر نوع التحويل</h2>
+            <div class="types-grid">
+                <button class="type-btn active" onclick="selectType('jpg-png')">
+                    <i data-lucide="image" class="icon"></i>
+                    <span>JPG → PNG</span>
+                </button>
+                <button class="type-btn" onclick="selectType('png-jpg')">
+                    <i data-lucide="refresh-cw" class="icon"></i>
+                    <span>PNG → JPG</span>
+                </button>
+                <button class="type-btn" onclick="selectType('webp-png')">
+                    <i data-lucide="globe" class="icon"></i>
+                    <span>WebP ↔ PNG</span>
+                </button>
+                <button class="type-btn" onclick="selectType('gif-png')">
+                    <i data-lucide="film" class="icon"></i>
+                    <span>GIF → PNG</span>
+                </button>
+                <button class="type-btn" onclick="selectType('raw-png')">
+                    <i data-lucide="camera" class="icon"></i>
+                    <span>RAW → PNG</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Upload Area -->
+        <div class="upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+            <div class="upload-content">
+                <i data-lucide="folder" class="upload-icon"></i>
+                <h3>اسحب الصورة هنا</h3>
+                <p>أو</p>
+                <label for="fileInput" class="file-label">اختر ملف</label>
+                <input type="file" id="fileInput" hidden accept="image/*" onchange="handleFileSelect(event)">
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section" id="previewSection" style="display: none;">
+            <div class="preview-grid">
+                <div class="preview-item">
+                    <h4>الصورة الأصلية</h4>
+                    <img id="originalImage" src="" alt="Original">
+                    <p id="originalInfo"></p>
+                </div>
+                <div class="arrow-divider">→</div>
+                <div class="preview-item">
+                    <h4>الصورة المحولة</h4>
+                    <img id="convertedImage" src="" alt="Converted" style="display: none;">
+                    <p id="convertedInfo" style="display: none;"></p>
+                    <div id="convertingLoader" style="display: none; text-align: center; padding: 40px;">
+                        <div class="spinner"></div>
+                        <p>جاري التحويل...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download Button -->
+            <div class="action-buttons">
+                <button class="download-btn" id="downloadBtn" onclick="downloadImage()" style="display: none;">
+                    ⬇️ تحميل الصورة المحولة
+                </button>
+                <button class="retry-btn" onclick="resetConverter()">
+                    🔄 اختيار صورة أخرى
+                </button>
+            </div>
+
+            <!-- GIF Options (if applicable) -->
+            <div id="gifOptions" style="display: none;" class="gif-options">
+                <label>
+                    <input type="radio" name="gifMode" value="first" checked> الإطار الأول فقط
+                </label>
+                <label>
+                    <input type="radio" name="gifMode" value="all"> تحويل كل الإطارات
+                </label>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="converter-footer">
+    <p>Image Pro - محول الصور الذكي والسريع</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
