@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Pro - محول الصور الذكي</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%23667eea;stop-opacity:1'/><stop offset='100%' style='stop-color:%23764ba2;stop-opacity:1'/></linearGradient></defs><circle cx='100' cy='100' r='95' fill='url(%23g)'/><g transform='translate(100, 100)'><path d='M -30 -20 L 20 30' stroke='white' stroke-width='16' fill='none' stroke-linecap='round'/><path d='M 20 30 L -35 40' stroke='white' stroke-width='16' fill='none' stroke-linecap='round'/></g></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles.css">
@@ -14,11 +15,11 @@
 <nav class="navbar">
     <div class="nav-container">
         <div class="logo">
-            <i data-lucide="image" class="logo-icon"></i>
+            <img src="logo.svg" alt="Image Pro Logo" class="logo-icon">
             <span class="logo-text">Image Pro</span>
         </div>
         <div style="display: flex; gap: 15px; align-items: center;">
-            <a href="dashboard.html" class="nav-link" style="color: #667eea; text-decoration: none; font-weight: 600; transition: all 0.3s ease;">📊 الإحصائيات</a>
+            <a href="pricing.html" class="nav-link" style="color: #667eea; text-decoration: none; font-weight: 600; transition: all 0.3s ease;">💎 الخطط</a>
             <a href="converter.html" class="cta-btn">ابدأ الآن</a>
         </div>
     </div>
@@ -60,6 +61,7 @@
     <div class="features-grid">
         <!-- Feature 1 -->
         <div class="feature-card">
+            <div class="feature-badge">تحويل</div>
             <i data-lucide="image" class="feature-icon"></i>
             <h3>JPG → PNG</h3>
             <p>حول الصور من JPG إلى PNG بجودة عالية مع الحفاظ على الشفافية</p>
@@ -67,6 +69,7 @@
 
         <!-- Feature 2 -->
         <div class="feature-card">
+            <div class="feature-badge">تحويل</div>
             <i data-lucide="refresh-cw" class="feature-icon"></i>
             <h3>PNG → JPG</h3>
             <p>تحويل سريع وآمن من PNG إلى JPG مع ضغط ذكي</p>
@@ -74,6 +77,7 @@
 
         <!-- Feature 3 -->
         <div class="feature-card">
+            <div class="feature-badge">حديث</div>
             <i data-lucide="globe" class="feature-icon"></i>
             <h3>WebP ↔ PNG</h3>
             <p>صيغة الويب الحديثة WebP مع الحفاظ على الجودة العالية</p>
@@ -81,6 +85,7 @@
 
         <!-- Feature 4 -->
         <div class="feature-card">
+            <div class="feature-badge">متقدم</div>
             <i data-lucide="film" class="feature-icon"></i>
             <h3>GIF → PNG</h3>
             <p>استخرج الإطار الأول أو كل الإطارات من الـ GIF</p>
@@ -88,6 +93,7 @@
 
         <!-- Feature 5 -->
         <div class="feature-card">
+            <div class="feature-badge">احترافي</div>
             <i data-lucide="camera" class="feature-icon"></i>
             <h3>RAW → PNG</h3>
             <p>حول صور RAW الاحترافية (CR2, NEF) إلى PNG</p>
@@ -95,30 +101,56 @@
 
         <!-- Feature 6 -->
         <div class="feature-card">
+            <div class="feature-badge">آمن</div>
             <i data-lucide="zap" class="feature-icon"></i>
             <h3>سرعة عالية</h3>
             <p>معالجة سريعة وآمنة في المتصفح بدون تحميل على الخادم</p>
         </div>
+
+        <!-- Feature 7 -->
+        <div class="feature-card">
+            <div class="feature-badge">جديد</div>
+            <i data-lucide="wand2" class="feature-icon"></i>
+            <h3>إزالة الخلفية</h3>
+            <p>أزل الخلفية من الصور تلقائياً مع تحكم دقيق بالحساسية</p>
+        </div>
     </div>
 </section>
 
-<!-- Stats Section -->
-<section class="stats">
-    <div class="stat-item">
-        <h3 class="stat-number">10000+</h3>
-        <p class="stat-label">صورة تم تحويلها</p>
-    </div>
-    <div class="stat-item">
-        <h3 class="stat-number">99%</h3>
-        <p class="stat-label">جودة الحفظ</p>
-    </div>
-    <div class="stat-item">
-        <h3 class="stat-number">&lt;2</h3>
-        <p class="stat-label">ثانية للتحويل</p>
-    </div>
-    <div class="stat-item">
-        <h3 class="stat-number">∞</h3>
-        <p class="stat-label">مجاني تماماً</p>
+<!-- Advantages Section -->
+<section class="advantages">
+    <h2 class="section-title">لماذا اختيار Image Pro؟</h2>
+    <div class="advantages-grid">
+        <div class="advantage-item">
+            <i data-lucide="shield-check" class="advantage-icon"></i>
+            <h4>100% آمن</h4>
+            <span class="advantage-subtitle">معالجة في المتصفح - لا يتم حفظ صورك على الخادم</span>
+        </div>
+        <div class="advantage-item">
+            <i data-lucide="zap" class="advantage-icon"></i>
+            <h4>بدون انتظار</h4>
+            <span class="advantage-subtitle">تحويل فوري وسريع جداً مع أفضل جودة</span>
+        </div>
+        <div class="advantage-item">
+            <i data-lucide="gift" class="advantage-icon"></i>
+            <h4>مجاني 100%</h4>
+            <span class="advantage-subtitle">ليس هناك اي رسوم مخفية أو اشتراكات مطلوبة</span>
+        </div>
+        <div class="advantage-item">
+            <i data-lucide="infinity" class="advantage-icon"></i>
+            <h4>غير محدود</h4>
+            <span class="advantage-subtitle">حول احتياجاتك الكاملة دون قيود على الكمية</span>
+        </div>
+        <div class="advantage-item">
+            <i data-lucide="smartphone" class="advantage-icon"></i>
+            <h4>جميع الأجهزة</h4>
+            <span class="advantage-subtitle">يعمل على الهاتف والكمبيوتر مع نفس الأداء</span>
+        </div>
+        <div class="advantage-item">
+            <i data-lucide="sparkles" class="advantage-icon"></i>
+            <h4>جودة عالية</h4>
+            <span class="advantage-subtitle">حافظ على أفضل جودة للصور عند التحويل</span>
+        </div>
     </div>
 </section>
 
@@ -126,10 +158,16 @@
 <section class="cta-section">
     <h2>جاهز لتحويل صورك؟</h2>
     <p>انقر الآن وابدأ استخدام أفضل محول صور</p>
-    <a href="converter.html" class="cta-large-btn">
-        <span>اذهب إلى المحول</span>
-        <i data-lucide="sparkles" class="sparkle"></i>
-    </a>
+    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <a href="converter.html" class="cta-large-btn">
+            <span>اذهب إلى المحول</span>
+            <i data-lucide="sparkles" class="sparkle"></i>
+        </a>
+        <a href="pricing.html" class="cta-large-btn" style="background: rgba(255,255,255,0.2); border: 2px solid white; color: white;">
+            <span>اعرف الخطط</span>
+            <i data-lucide="crown" class="sparkle"></i>
+        </a>
+    </div>
 </section>
 
 <!-- Footer -->
@@ -138,6 +176,29 @@
 </footer>
 
 <script src="script.js"></script>
+
+<script>
+    // Track visitor on homepage
+    function trackVisitor() {
+        let stats = JSON.parse(localStorage.getItem('imageProStats')) || {};
+        
+        if (!stats.visitorDates) {
+            stats.visitorDates = [];
+        }
+
+        const timestamp = new Date().toISOString();
+        stats.visitorDates.push(timestamp);
+
+        if (stats.visitorDates.length > 1000) {
+            stats.visitorDates = stats.visitorDates.slice(-1000);
+        }
+
+        localStorage.setItem('imageProStats', JSON.stringify(stats));
+    }
+
+    // Track visitor when page loads
+    document.addEventListener('DOMContentLoaded', trackVisitor);
+</script>
 
 </body>
 </html>

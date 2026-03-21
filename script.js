@@ -17,6 +17,14 @@ function selectType(type) {
     } else {
         gifOptions.style.display = 'none';
     }
+    
+    // Show threshold option for remove-bg if needed
+    const removeBgOptions = document.getElementById('removeBgOptions');
+    if (type === 'remove-bg' && removeBgOptions) {
+        removeBgOptions.style.display = 'block';
+    } else if (removeBgOptions) {
+        removeBgOptions.style.display = 'none';
+    }
 }
 
 // Upload Area Interactions
@@ -93,6 +101,11 @@ function displayPreview() {
 
 // Perform Conversion
 function performConversion(imagePath) {
+    if (currentConversionType === 'remove-bg') {
+        performRemoveBackground(imagePath);
+        return;
+    }
+    
     const canvas = document.createElement('canvas');
     const img = new Image();
     
@@ -141,6 +154,112 @@ function performConversion(imagePath) {
     img.src = imagePath;
 }
 
+// Remove Background Function
+function performRemoveBackground(imagePath) {
+    const canvas = document.createElement('canvas');
+    const img = new Image();
+    
+    img.onload = function() {
+        const convertedImage = document.getElementById('convertedImage');
+        const convertedInfo = document.getElementById('convertedInfo');
+        const convertingLoader = document.getElementById('convertingLoader');
+        
+        // Set canvas size
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        
+        // Draw image
+        ctx.drawImage(img, 0, 0);
+        
+        // Get image data
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        
+        // Get threshold (default 30)
+        const thresholdInput = document.getElementById('bgThreshold');
+        const threshold = thresholdInput ? parseInt(thresholdInput.value) : 30;
+        
+        // Detect background color from corners
+        const bgColor = detectBackgroundColor(data, canvas.width, canvas.height);
+        
+        // Make background transparent
+        removeBackgroundColor(data, bgColor, threshold);
+        
+        // Put modified image data back
+        ctx.putImageData(imageData, 0, 0);
+        
+        // Convert to PNG (PNG supports transparency)
+        canvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            convertedImage.src = url;
+            convertedImage.style.display = 'block';
+            convertedInfo.textContent = `PNG - ${(blob.size / 1024).toFixed(2)} KB`;
+            convertedInfo.style.display = 'block';
+            convertingLoader.style.display = 'none';
+            
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.style.display = 'block';
+            
+            // Store blob for download
+            window.convertedBlob = blob;
+            window.outputFormat = 'PNG';
+        }, 'image/png', 1.0);
+    };
+    
+    img.crossOrigin = 'anonymous';
+    img.src = imagePath;
+}
+
+// Detect background color from image corners
+function detectBackgroundColor(data, width, height) {
+    const colors = [];
+    
+    // Sample colors from corners
+    const samples = [
+        { x: 5, y: 5 },           // Top-left
+        { x: width - 5, y: 5 },   // Top-right
+        { x: 5, y: height - 5 },  // Bottom-left
+        { x: width - 5, y: height - 5 } // Bottom-right
+    ];
+    
+    samples.forEach(sample => {
+        const idx = (sample.y * width + sample.x) * 4;
+        colors.push({
+            r: data[idx],
+            g: data[idx + 1],
+            b: data[idx + 2],
+            a: data[idx + 3]
+        });
+    });
+    
+    // Return average color (most likely background)
+    const avg = {
+        r: Math.round(colors.reduce((sum, c) => sum + c.r, 0) / colors.length),
+        g: Math.round(colors.reduce((sum, c) => sum + c.g, 0) / colors.length),
+        b: Math.round(colors.reduce((sum, c) => sum + c.b, 0) / colors.length)
+    };
+    
+    return avg;
+}
+
+// Remove background color by making it transparent
+function removeBackgroundColor(data, bgColor, threshold) {
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        
+        // Calculate color similarity
+        const diff = Math.abs(r - bgColor.r) + Math.abs(g - bgColor.g) + Math.abs(b - bgColor.b);
+        
+        // If color is similar to background, make it transparent
+        if (diff < threshold * 3) {
+            data[i + 3] = 0; // Set alpha to 0 (transparent)
+        }
+    }
+}
+
 // Download Image
 function downloadImage() {
     if (!window.convertedBlob) return;
@@ -173,17 +292,74 @@ function resetConverter() {
 function recordConversion(type) {
     let stats = JSON.parse(localStorage.getItem('imageProStats')) || {};
     
+    // Initialize objects if needed
     if (!stats.conversionsByType) {
         stats.conversionsByType = {};
     }
-    
+    if (!stats.visitorDates) {
+        stats.visitorDates = [];
+    }
+    if (!stats.dailyConversions) {
+        stats.dailyConversions = {};
+    }
+
+    // Get current date
+    const today = new Date().toISOString().split('T')[0];
+    const timestamp = new Date().toISOString();
+
+    // Record conversion by type (all-time)
     stats.conversionsByType[type] = (stats.conversionsByType[type] || 0) + 1;
+
+    // Record daily conversion count
+    if (!stats.dailyConversions[today]) {
+        stats.dailyConversions[today] = 0;
+    }
+    stats.dailyConversions[today]++;
+
+    // Record conversion with timestamp for today
+    const typeId = type + '_' + today;
+    stats[typeId] = (stats[typeId] || 0) + 1;
+
+    // Store conversion timestamp for activity log
+    if (!stats.recentConversions) {
+        stats.recentConversions = [];
+    }
+    stats.recentConversions.push({
+        type: type,
+        timestamp: timestamp
+    });
+
+    // Keep only last 100 conversions
+    if (stats.recentConversions.length > 100) {
+        stats.recentConversions = stats.recentConversions.slice(-100);
+    }
+
+    localStorage.setItem('imageProStats', JSON.stringify(stats));
+}
+
+// Track visitor
+function trackVisitor() {
+    let stats = JSON.parse(localStorage.getItem('imageProStats')) || {};
     
+    if (!stats.visitorDates) {
+        stats.visitorDates = [];
+    }
+
+    const timestamp = new Date().toISOString();
+    stats.visitorDates.push(timestamp);
+
+    // Keep only last 1000 visitor records
+    if (stats.visitorDates.length > 1000) {
+        stats.visitorDates = stats.visitorDates.slice(-1000);
+    }
+
     localStorage.setItem('imageProStats', JSON.stringify(stats));
 }
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
+    // Track visitor
+    trackVisitor();
     // Set first type as active
     if (document.querySelector('.type-btn')) {
         document.querySelector('.type-btn').classList.add('active');
@@ -193,6 +369,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('uploadArea').addEventListener('click', function() {
         document.getElementById('fileInput').click();
     });
+    
+    // Update threshold value display
+    const thresholdSlider = document.getElementById('bgThreshold');
+    if (thresholdSlider) {
+        thresholdSlider.addEventListener('input', function() {
+            document.getElementById('thresholdValue').textContent = this.value;
+        });
+    }
     
     // Initialize Lucide icons
     if (typeof lucide !== 'undefined') {

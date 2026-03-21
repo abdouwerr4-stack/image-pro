@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الخطط والأسعار - Image Pro</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%23667eea;stop-opacity:1'/><stop offset='100%' style='stop-color:%23764ba2;stop-opacity:1'/></linearGradient></defs><circle cx='100' cy='100' r='95' fill='url(%23g)'/><g transform='translate(100, 100)'><path d='M -30 -20 L 20 30' stroke='white' stroke-width='16' fill='none' stroke-linecap='round'/><path d='M 20 30 L -35 40' stroke='white' stroke-width='16' fill='none' stroke-linecap='round'/></g></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .pricing-hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .pricing-hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .pricing-hero p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            position: relative;
+            text-align: center;
+        }
+
+        .pricing-card.featured {
+            border-color: #667eea;
+            transform: scale(1.05);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+
+        .pricing-card:hover:not(.featured) {
+            border-color: #667eea;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .pricing-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        .plan-price {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .plan-price small {
+            font-size: 18px;
+            color: #999;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .plan-description {
+            color: #666;
+            margin: 20px 0;
+            min-height: 40px;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 30px 0;
+            text-align: right;
+            border-top: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+            margin: 20px 0;
+        }
+
+        .features-list li {
+            padding: 10px 0;
+            color: #333;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            color: #00d4aa;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .features-list li.disabled {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        .features-list li.disabled::before {
+            content: '✗';
+            color: #ccc;
+        }
+
+        .plan-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .plan-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .plan-button.outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .plan-button.outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .plan-button.free {
+            background: #e0e0e0;
+            color: #333;
+            cursor: default;
+        }
+
+        .plan-button.free:hover {
+            background: #e0e0e0;
+            transform: none;
+        }
+
+        .faq-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 60px 20px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+            color: var(--text-dark);
+        }
+
+        .faq-item {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .faq-item h4 {
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .faq-item p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 20px rgba(102, 126, 234, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--bg-light);
+            color: #666;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="logo.svg" alt="Image Pro Logo" class="logo-icon">
+                <span>Image Pro</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">الرئيسية</a>
+                <a href="converter.html">المحول</a>
+                <a href="pricing.html" style="color: #667eea;">الخطط</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pricing-hero">
+        <h1>اختر الخطة المناسبة لك</h1>
+        <p>استمتع بمميزات رائعة مع Image Pro</p>
+    </section>
+
+    <!-- Pricing Container -->
+    <div class="pricing-container">
+        <!-- Pricing Cards -->
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card">
+                <div class="pricing-badge">مجاني</div>
+                <div class="plan-name">الحر</div>
+                <div class="plan-price">0 ر.س
+                    <small>مجاني للأبد</small>
+                </div>
+                <p class="plan-description">ابدأ بدون دفع</p>
+                <ul class="features-list">
+                    <li>✅ المحول الأساسي (JPG, PNG, WebP)</li>
+                    <li>✅ تحويل GIF و RAW</li>
+                    <li>✅ إزالة خلفية بسيطة</li>
+                    <li class="disabled">❌ ضغط الصور المتقدم</li>
+                    <li class="disabled">❌ تغيير حجم متعدد</li>
+                    <li class="disabled">❌ دعم أولويات</li>
+                </ul>
+                <button class="plan-button free">الخطة الحالية ✓</button>
+            </div>
+
+            <!-- Premium Plan -->
+            <div class="pricing-card featured">
+                <div class="pricing-badge">مشهور</div>
+                <div class="plan-name">البريميوم</div>
+                <div class="plan-price">9.99 ر.س
+                    <small>شهرياً</small>
+                </div>
+                <p class="plan-description">للمستخدمين النشطين</p>
+                <ul class="features-list">
+                    <li>✅ كل مميزات الخطة المجانية</li>
+                    <li>✅ إزالة خلفية متقدمة (حساسية قابلة للتعديل)</li>
+                    <li>✅ ضغط الصور (تقليل الحجم بدون فقدان الجودة)</li>
+                    <li>✅ تغيير حجم الصور (تكبير/تصغير)</li>
+                    <li>✅ تحويل متعدد دفعة واحدة</li>
+                    <li class="disabled">❌ تحرير متقدم (علامات مائية، مرشحات)</li>
+                </ul>
+                <button class="plan-button" onclick="subscribePlan('premium')">ترقية الآن</button>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card">
+                <div class="pricing-badge">احترافي</div>
+                <div class="plan-name">البروفشنال</div>
+                <div class="plan-price">19.99 ر.س
+                    <small>شهرياً</small>
+                </div>
+                <p class="plan-description">للمحترفين</p>
+                <ul class="features-list">
+                    <li>✅ كل مميزات البريميوم</li>
+                    <li>✅ علامات مائية (نص/صورة)</li>
+                    <li>✅ مرشحات وتأثيرات متقدمة</li>
+                    <li>✅ حفظ الإعدادات المفضلة</li>
+                    <li>✅ تحليلات مفصلة للاستخدام</li>
+                    <li>✅ دعم فريق مباشر 24/7</li>
+                </ul>
+                <button class="plan-button" onclick="subscribePlan('pro')">الترقية للبروفشنال</button>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <h2>أسئلة شائعة</h2>
+            <div class="faq-item">
+                <h4>متى سيتم فعل المميزات الإضافية؟</h4>
+                <p>المميزات الإضافية ستكون متاحة قريباً. الآن يمكنك الاشتراك للحصول على الأولوية!</p>
+            </div>
+            <div class="faq-item">
+                <h4>هل يمكن إلغاء الاشتراك في أي وقت؟</h4>
+                <p>نعم، يمكنك إلغاء الاشتراك في أي وقت بدون رسوم إضافية.</p>
+            </div>
+            <div class="faq-item">
+                <h4>هل هناك فترة تجربة مجانية؟</h4>
+                <p>الخطة المجانية متاحة للأبد، وبإمكانك تجربة المميزات الأخرى.</p>
+            </div>
+            <div class="faq-item">
+                <h4>هل الأسعار تشمل ضريبة القيمة المضافة؟</h4>
+                <p>الأسعار قبل الضريبة. ستُضاف ضريبة القيمة المضافة عند الدفع.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Image Pro - جميع الحقوق محفوظة</p>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // Subscribe to plan
+        function subscribePlan(plan) {
+            let subscriptions = JSON.parse(localStorage.getItem('userSubscriptions') || '{}');
+            
+            subscriptions[plan] = {
+                plan: plan,
+                subscribed_at: new Date().toISOString(),
+                status: 'active'
+            };
+            
+            localStorage.setItem('userSubscriptions', JSON.stringify(subscriptions));
+            
+            // Show success message
+            alert(`تم الاشتراك في خطة ${plan === 'premium' ? 'البريميوم' : 'البروفشنال'} بنجاح! 🎉`);
+            
+            // Reload to update UI
+            location.reload();
+        }
+
+        // Check subscription status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const subscriptions = JSON.parse(localStorage.getItem('userSubscriptions') || '{}');
+            
+            // Update buttons based on subscription
+            if (subscriptions.premium) {
+                const premiumBtn = document.querySelectorAll('.plan-button')[1];
+                premiumBtn.textContent = 'مشترك حالياً ✓';
+                premiumBtn.style.background = '#00d4aa';
+                premiumBtn.style.cursor = 'default';
+                premiumBtn.onclick = null;
+            }
+            
+            if (subscriptions.pro) {
+                const proBtn = document.querySelectorAll('.plan-button')[2];
+                proBtn.textContent = 'مشترك حالياً ✓';
+                proBtn.style.background = '#00d4aa';
+                proBtn.style.cursor = 'default';
+                proBtn.onclick = null;
+            }
+
+            // Initialize Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>
