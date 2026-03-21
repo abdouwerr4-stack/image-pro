@@ -1,14 +1,49 @@
 // Global Variables
+let currentMode = 'converter'; // 'converter' or 'remove-bg'
 let currentConversionType = 'jpg-png';
 let selectedFile = null;
 
+function setMode(mode) {
+    currentMode = mode;
+    const convertBtn = document.getElementById('convertModeBtn');
+    const removeBgBtn = document.getElementById('removeBgModeBtn');
+    const conversionTypesSection = document.querySelector('.conversion-types');
+    const removeBgOptions = document.getElementById('removeBgOptions');
+    const gifOptions = document.getElementById('gifOptions');
+
+    if (mode === 'converter') {
+        currentConversionType = 'jpg-png';
+        convertBtn.classList.add('active');
+        removeBgBtn.classList.remove('active');
+        conversionTypesSection.style.display = 'block';
+        removeBgOptions.style.display = 'none';
+        gifOptions.style.display = 'none';
+        document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.type-btn[data-type="jpg-png"]').classList.add('active');
+    } else {
+        currentConversionType = 'remove-bg';
+        removeBgBtn.classList.add('active');
+        convertBtn.classList.remove('active');
+        conversionTypesSection.style.display = 'none';
+        removeBgOptions.style.display = 'block';
+        gifOptions.style.display = 'none';
+        document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+    }
+}
+
 // Selection of conversion type
-function selectType(type) {
+function selectType(type, buttonElement) {
+    if (currentMode !== 'converter') {
+        return;
+    }
+
     currentConversionType = type;
     
     // Update UI
     document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.closest('.type-btn').classList.add('active');
+    if (buttonElement) {
+        buttonElement.classList.add('active');
+    }
     
     // Show GIF options if needed
     const gifOptions = document.getElementById('gifOptions');
@@ -18,11 +53,9 @@ function selectType(type) {
         gifOptions.style.display = 'none';
     }
     
-    // Show threshold option for remove-bg if needed
+    // Hide remove-bg options when in converter mode
     const removeBgOptions = document.getElementById('removeBgOptions');
-    if (type === 'remove-bg' && removeBgOptions) {
-        removeBgOptions.style.display = 'block';
-    } else if (removeBgOptions) {
+    if (removeBgOptions) {
         removeBgOptions.style.display = 'none';
     }
 }
@@ -360,11 +393,14 @@ function trackVisitor() {
 document.addEventListener('DOMContentLoaded', function() {
     // Track visitor
     trackVisitor();
-    // Set first type as active
-    if (document.querySelector('.type-btn')) {
-        document.querySelector('.type-btn').classList.add('active');
+    // Initialize mode and selection based on query
+    const mode = new URLSearchParams(window.location.search).get('mode');
+    if (mode === 'remove-bg') {
+        setMode('remove-bg');
+    } else {
+        setMode('converter');
     }
-    
+
     // Make upload area clickable
     document.getElementById('uploadArea').addEventListener('click', function() {
         document.getElementById('fileInput').click();

@@ -21,37 +21,49 @@
     </div>
 </header>
 
+<!-- Visual Spotlight Section -->
+<section class="visual-showcase">
+    <div class="showcase-card">
+        <div class="showcase-icon">✨</div>
+        <h2>تصميم جذاب لواجهة Image Pro</h2>
+        <p>استمتع بواجهة مرتبة، ألوان حيوية، وتحويل سلس لصورتك. الجودة تبدأ من تجربة المستخدم.</p>
+        <div class="showcase-image" aria-hidden="true"></div>
+    </div>
+</section>
+
 <!-- Main Converter Section -->
 <main class="converter-main">
     <div class="converter-container">
         
+        <!-- Mode Switch -->
+        <div class="mode-switch" style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px;">
+            <button id="convertModeBtn" class="mode-btn active" onclick="setMode('converter')">🔁 محول الصور</button>
+            <button id="removeBgModeBtn" class="mode-btn" onclick="setMode('remove-bg')">✨ إزالة الخلفية</button>
+        </div>
+
         <!-- Conversion Type Selection -->
         <div class="conversion-types">
             <h2>اختر نوع التحويل</h2>
             <div class="types-grid">
-                <button class="type-btn active" onclick="selectType('jpg-png')">
+                <button class="type-btn active" data-type="jpg-png" onclick="selectType('jpg-png', this)">
                     <i data-lucide="image" class="icon"></i>
                     <span>JPG → PNG</span>
                 </button>
-                <button class="type-btn" onclick="selectType('png-jpg')">
+                <button class="type-btn" data-type="png-jpg" onclick="selectType('png-jpg', this)">
                     <i data-lucide="refresh-cw" class="icon"></i>
                     <span>PNG → JPG</span>
                 </button>
-                <button class="type-btn" onclick="selectType('webp-png')">
+                <button class="type-btn" data-type="webp-png" onclick="selectType('webp-png', this)">
                     <i data-lucide="globe" class="icon"></i>
                     <span>WebP ↔ PNG</span>
                 </button>
-                <button class="type-btn" onclick="selectType('gif-png')">
+                <button class="type-btn" data-type="gif-png" onclick="selectType('gif-png', this)">
                     <i data-lucide="film" class="icon"></i>
                     <span>GIF → PNG</span>
                 </button>
-                <button class="type-btn" onclick="selectType('raw-png')">
+                <button class="type-btn" data-type="raw-png" onclick="selectType('raw-png', this)">
                     <i data-lucide="camera" class="icon"></i>
                     <span>RAW → PNG</span>
-                </button>
-                <button class="type-btn" onclick="selectType('remove-bg')">
-                    <i data-lucide="wand2" class="icon"></i>
-                    <span>إزالة الخلفية</span>
                 </button>
             </div>
         </div>
