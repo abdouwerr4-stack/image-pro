@@ -21,19 +21,11 @@
     </div>
 </header>
 
-<!-- Visual Spotlight Section -->
-<section class="visual-showcase">
-    <div class="showcase-card">
-        <div class="showcase-icon">✨</div>
-        <h2>تصميم جذاب لواجهة Image Pro</h2>
-        <p>استمتع بواجهة مرتبة، ألوان حيوية، وتحويل سلس لصورتك. الجودة تبدأ من تجربة المستخدم.</p>
-        <div class="showcase-image" aria-hidden="true"></div>
-    </div>
-</section>
+
 
 <!-- Main Converter Section -->
 <main class="converter-main">
-    <div class="converter-container">
+    <div class="converter-container premium-converter-panel">
         
         <!-- Mode Switch -->
         <div class="mode-switch" style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px;">
@@ -69,7 +61,7 @@
         </div>
 
         <!-- Upload Area -->
-        <div class="upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+        <div class="upload-area premium-dropzone" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
             <div class="upload-content">
                 <i data-lucide="folder" class="upload-icon"></i>
                 <h3>اسحب الصورة هنا</h3>
@@ -80,7 +72,7 @@
         </div>
 
         <!-- Preview Section -->
-        <div class="preview-section" id="previewSection" style="display: none;">
+        <div class="preview-section premium-preview" id="previewSection" style="display: none;">
             <div class="preview-grid">
                 <div class="preview-item">
                     <h4>الصورة الأصلية</h4>
@@ -120,11 +112,31 @@
             </div>
 
             <!-- Remove BG Options -->
-            <div id="removeBgOptions" style="display: none;" class="remove-bg-options">
-                <label for="bgThreshold">حساسية الخلفية:</label>
-                <input type="range" id="bgThreshold" min="5" max="50" value="30" step="5">
-                <span id="thresholdValue">30</span>
-                <p style="font-size: 12px; color: #666; margin-top: 10px;">قيمة أقل = دقة أعلى | قيمة أعلى = خلفية أكثر إزالة</p>
+            <div id="removeBgOptions" style="display: none;" class="remove-bg-options premium-options-box">
+                <div class="option-group">
+                    <label>طريقة تحديد الخلفية:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="bgDetectionMode" value="auto" checked onchange="toggleColorPicker(false)"> تلقائي (زوايا الصورة)</label>
+                        <label><input type="radio" name="bgDetectionMode" value="manual" onchange="toggleColorPicker(true)"> اختيار يدوي</label>
+                    </div>
+                </div>
+                
+                <div class="option-group" id="manualColorPicker" style="display: none;">
+                    <label for="bgColorPicker">اختر لون الخلفية المراد إزالته:</label>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-top: 8px;">
+                        <input type="color" id="bgColorPicker" value="#ffffff">
+                        <span style="font-size: 14px; color: #666;">(اضغط لاختيار اللون)</span>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label for="bgThreshold">حساسية الخلفية:</label>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <input type="range" id="bgThreshold" min="5" max="100" value="30" step="1" style="flex:1;">
+                        <span id="thresholdValue" style="font-weight: bold; color: var(--accent);">30</span>
+                    </div>
+                    <p style="font-size: 12px; color: #888; margin-top: 5px;">قيمة أقل = دقة أعلى وتبقي الحواف | قيمة أعلى = تزيل المزيد من الألوان المتقاربة</p>
+                </div>
             </div>
         </div>
     </div>

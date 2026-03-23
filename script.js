@@ -31,6 +31,69 @@ function setMode(mode) {
     }
 }
 
+// Toggle manual Color Picker in UI
+function toggleColorPicker(show) {
+    const picker = document.getElementById('manualColorPicker');
+    if (picker) {
+        picker.style.display = show ? 'block' : 'none';
+    }
+}
+
+// Convert Hex to RGB
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+// Initialize Slider logic for homepage
+function initSliders() {
+    const sliders = document.querySelectorAll('.comparison-slider');
+    sliders.forEach(slider => {
+        let isDown = false;
+        const handle = slider.querySelector('.slider-handle');
+        const afterImg = slider.querySelector('.comparison-after');
+        if (!handle || !afterImg) return;
+        
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active');
+        });
+        
+        window.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.classList.remove('active');
+        });
+        
+        window.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            const rect = slider.getBoundingClientRect();
+            // Using RTL so calculation is inverted visually
+            let x = e.clientX - rect.left;
+            x = Math.max(0, Math.min(x, rect.width));
+            const percent = (x / rect.width) * 100;
+            handle.style.left = percent + '%';
+            afterImg.style.clipPath = `polygon(${percent}% 0, 100% 0, 100% 100%, ${percent}% 100%)`;
+        });
+        
+        // Touch events
+        slider.addEventListener('touchstart', (e) => { isDown = true; });
+        window.addEventListener('touchend', () => { isDown = false; });
+        window.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            const rect = slider.getBoundingClientRect();
+            let x = e.touches[0].clientX - rect.left;
+            x = Math.max(0, Math.min(x, rect.width));
+            const percent = (x / rect.width) * 100;
+            handle.style.left = percent + '%';
+            afterImg.style.clipPath = `polygon(${percent}% 0, 100% 0, 100% 100%, ${percent}% 100%)`;
+        });
+    });
+}
+
 // Selection of conversion type
 function selectType(type, buttonElement) {
     if (currentMode !== 'converter') {
@@ -213,8 +276,22 @@ function performRemoveBackground(imagePath) {
         const thresholdInput = document.getElementById('bgThreshold');
         const threshold = thresholdInput ? parseInt(thresholdInput.value) : 30;
         
-        // Detect background color from corners
-        const bgColor = detectBackgroundColor(data, canvas.width, canvas.height);
+        // Check detection mode
+        const modeRadios = document.querySelectorAll('input[name="bgDetectionMode"]');
+        let isManualMode = false;
+        modeRadios.forEach(radio => {
+            if (radio.checked && radio.value === 'manual') isManualMode = true;
+        });
+        
+        // Detect background color
+        let bgColor;
+        if (isManualMode) {
+            const picker = document.getElementById('bgColorPicker');
+            bgColor = hexToRgb(picker.value);
+        } else {
+            bgColor = detectBackgroundColor(data, canvas.width, canvas.height);
+        }
+
         
         // Make background transparent
         removeBackgroundColor(data, bgColor, threshold);
@@ -276,19 +353,29 @@ function detectBackgroundColor(data, width, height) {
     return avg;
 }
 
-// Remove background color by making it transparent
+// Remove background color by making it transparent with soft edges
 function removeBackgroundColor(data, bgColor, threshold) {
     for (let i = 0; i < data.length; i += 4) {
         const r = data[i];
         const g = data[i + 1];
         const b = data[i + 2];
         
-        // Calculate color similarity
-        const diff = Math.abs(r - bgColor.r) + Math.abs(g - bgColor.g) + Math.abs(b - bgColor.b);
+        // Euclidean distance for better color matching accuracy
+        const distance = Math.sqrt(
+            Math.pow(r - bgColor.r, 2) + 
+            Math.pow(g - bgColor.g, 2) + 
+            Math.pow(b - bgColor.b, 2)
+        );
         
-        // If color is similar to background, make it transparent
-        if (diff < threshold * 3) {
-            data[i + 3] = 0; // Set alpha to 0 (transparent)
+        const strictThreshold = threshold * 1.5; // Scale user threshold
+        const softEdgeRadius = 25; // Pixels distance for anti-aliasing fade
+        
+        if (distance < strictThreshold) {
+            data[i + 3] = 0; // Fully transparent
+        } else if (distance < strictThreshold + softEdgeRadius) {
+            // Soft edge (alpha blending)
+            const alpha = ((distance - strictThreshold) / softEdgeRadius) * 255;
+            data[i + 3] = alpha;
         }
     }
 }
@@ -417,5 +504,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize Lucide icons
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
+    }
+    
+    // Initialize sliders if any exist
+    initSliders();
+    
+    // 3D Panel Tilt Effect
+    const panel = document.querySelector('.premium-converter-panel');
+    if (panel) {
+        panel.classList.add('tilt-3d');
+        document.addEventListener('mousemove', (e) => {
+            // Only tilt slightly so it doesn't break UX
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 80;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 80;
+            panel.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+        document.addEventListener('mouseleave', () => {
+            panel.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        });
     }
 });
